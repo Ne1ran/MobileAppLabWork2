@@ -18,6 +18,9 @@ import android.widget.Toast;
 import com.example.mobileapplabwork2.R;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.graphics.Color;
+import android.content.Context;
+import androidx.core.content.ContextCompat;
 
 public class HomeFragment extends Fragment {
 
@@ -33,15 +36,21 @@ public class HomeFragment extends Fragment {
     public static TableLayout tableLayout1;
     // Объявление объекта табличная разметка tableLayout2
     public static TableLayout tableLayout2; // Объявление TableLayout2
+    // Объявление объекта табличная разметка tableLayout3
+    public static TableLayout tableLayout3;
     // Массив строк таблицы tablRow1
     public static TableRow.LayoutParams tlpF3;
     public static TableRow[] tablRow1;
     // Массив строк таблицы tablRow2
     public static TableRow[] tablRow2; // Объявление TableRow[] для второй таблицы
+    // Массив строк таблицы tablRow3
+    public static TableRow[] tablRow3;
     // Одномерный массив текстовых меток tv1
     public static TextView[][] tv1;
     // Двумерный массив текстовых меток tv2
     public static TextView[][] tv2; // Объявление TextView[][] для второй таблицы
+    // Двумерный массив текстовых меток tv3
+    public static TextView[][] tv3;
     // Счётчик циклов
     public static int i1;
     // Счётчик циклов j1
@@ -49,14 +58,8 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         // Подключение relativeLayout1 к разметке
         relativeLayout1 = (RelativeLayout) root.findViewById(R.id.relativeLayout1);
@@ -66,6 +69,8 @@ public class HomeFragment extends Fragment {
         tableLayout1 = (TableLayout) root.findViewById(R.id.tableLayout1);
         // Подключение tableLayout2 к разметке
         tableLayout2 = (TableLayout) root.findViewById(R.id.tableLayout2);
+        // Подключение tableLayout3 к разметке
+        tableLayout3 = (TableLayout) root.findViewById(R.id.tableLayout3);
 
         // Установка полной ширины индикатора
         tabLayout1.setTabIndicatorFullWidth(true);
@@ -113,6 +118,8 @@ public class HomeFragment extends Fragment {
         tabLayout1 = (TabLayout) getActivity().findViewById(R.id.tabLayout1);
         tableLayout1 = (TableLayout) getActivity().findViewById(R.id.tableLayout1);
         tableLayout2 = (TableLayout) getActivity().findViewById(R.id.tableLayout2);
+        // Подключение tableLayout3 к разметке в onStart
+        tableLayout3 = (TableLayout) getActivity().findViewById(R.id.tableLayout3);
 
         // Загрузка таблицы при старте фрагмента
         loadTable(i1);
@@ -130,130 +137,69 @@ public class HomeFragment extends Fragment {
         // Очистка TableLayout перед добавлением новых строк
         tableLayout1.removeAllViews();
         tableLayout2.removeAllViews();
+        tableLayout3.removeAllViews();
 
-        // Создание массива строк таблицы (1 строка)
-        tablRow1 = new TableRow[1];
-        // Создание массива текстовых меток (1 строка, 3 столбца)
-        tv1 = new TextView[1][3];
+        // Создание массива строк таблицы tablRow3 (20 строк)
+        tablRow3 = new TableRow[20];
+        // Создание массива текстовых меток tv3 (20 строк, 2 столбца)
+        tv3 = new TextView[20][2];
 
-        // Растягиваем колонки 2 и 3 (индексы 1 и 2) для tableLayout1
-        tableLayout1.setColumnStretchable(1, true);
-        tableLayout1.setColumnStretchable(2, true);
-
-        // Создание параметров табличной разметки для строки
+        // Параметры табличной разметки для строки (используем tlpF3, как в скриншоте)
         tlpF3 = new TableRow.LayoutParams(
                 TableRow.LayoutParams.MATCH_PARENT,
                 TableRow.LayoutParams.WRAP_CONTENT
         );
 
-        // Создание строки в tablRow1
-        tablRow1[0] = new TableRow(getActivity());
-        // Установка параметров строки
-        tablRow1[0].setLayoutParams(tlpF3);
-        // Установка интервалов между компонентами типа TextView
-        tablRow1[0].setPadding(1, 1, 1, 1);
+        // Обнуление счётчика цикла по строкам таблицы
+        int rowIndex = 0;
+        // Цикл по строкам таблицы (до 20, обучаемых)
+        while (rowIndex < 20) {
+            // Создание первой ячейки в строки tablRow3
+            tablRow3[rowIndex] = new TableRow(getActivity());
+            // Установка интервалов между компонентами типа tablRow3 таблицы 3
+            tablRow3[rowIndex].setPadding(1, 1, 1, 1);
+            // Установка параметров строки tablRow3 таблицы 3
+            tablRow3[rowIndex].setLayoutParams(tlpF3);
 
-        // Обнуление счётчика ячеек
-        int i = 0;
-        // Цикл по элементам строки таблицы 1 таблицы 1
-        while (i < 3) {
-            // Создание очередного TextView в текущей Activity
-            tv1[0][i] = new TextView(getActivity());
-            // Установка высоты шрифта
-            tv1[0][i].setTextSize(14);
-            // Установка цвета текста текущего TextView
-            tv1[0][i].setTextColor(getResources().getColor(R.color.black));
-
-            if (i == 0) {
-                // Если первая ячейка строки tablRow1
-                tv1[0][i].setText("");
-                tv1[0][i].setWidth(getResources().getDimensionPixelSize(R.dimen.cell_width_0));
-                // Установка цвета фона текущего TextView
-                tv1[0][i].setBackgroundColor(getResources().getColor(R.color.blueLitCyan));
-            } else if (i == 1) {
-                // Если вторая ячейка строки tablRow1
-                tv1[0][i].setText("Дисциплина");
-                tv1[0][i].setWidth(getResources().getDimensionPixelSize(R.dimen.cell_width_1));
-                // Установка цвета фона текущего TextView
-                tv1[0][i].setBackgroundColor(getResources().getColor(R.color.blueMidCyan));
-            } else if (i == 2) {
-                // Если третья ячейка строки tablRow1
-                tv1[0][i].setText("Проектирование мобильных приложений");
-                tv1[0][i].setWidth(getResources().getDimensionPixelSize(R.dimen.cell_width_2));
-                // Установка цвета фона текущего TextView
-                tv1[0][i].setBackgroundColor(getResources().getColor(R.color.white));
-            }
-            // Добавление TextView в строку tablRow1
-            tablRow1[0].addView(tv1[0][i], i);
-
-            i++;
-        }
-        // Добавление строки tablRow1 в таблицу
-        tableLayout1.addView(tablRow1[0], 0);
-
-        // Начало работы со второй таблицей (tableLayout2)
-
-        // Создание массива строк таблицы tablRow2 (2 строки)
-        tablRow2 = new TableRow[2];
-        // Создание массива текстовых меток tv2 (2 строки, 6 столбцов)
-        tv2 = new TextView[2][6];
-
-        // Растягиваем колонку 2 (индекс 1) для tableLayout2
-        tableLayout2.setColumnStretchable(1, true);
-
-        // Обнуление счётчика цикла по строкам таблицы 2
-        int row_i = 0;
-        // Цикл по строкам таблицы 2
-        while (row_i < 2) {
-             // Создание первой ячейки в строки tablRow2
-            tablRow2[row_i] = new TableRow(getActivity());
-            tablRow2[row_i].setPadding(1, 1, 1, 1);
-            tablRow2[row_i].setLayoutParams(tlpF3);
-
-            // Обнуление счётчика цикла по элементам строки tablRow2 таблицы 2
-            j1 = 0;
-            // Цикл по элементам строки tablRow2 таблицы 2
-            while (j1 < 6) {
+            // Обнуление счётчика цикла по элементам строки tablRow3 таблицы 3
+            int colIndex = 0;
+            // Цикл по элементам строки tablRow3 таблицы 3
+            while (colIndex < 2) {
                 // Создание очередного TextView в текущей Activity
-                tv2[row_i][j1] = new TextView(getActivity());
-                tv2[row_i][j1].setTextSize(14);
-                tv2[row_i][j1].setTextColor(getResources().getColor(R.color.black));
+                tv3[rowIndex][colIndex] = new TextView(getActivity());
 
-                if (j1 == 0) {
-                    tv2[row_i][j1].setText("");
-                    tv2[row_i][j1].setWidth(getResources().getDimensionPixelSize(R.dimen.cell_width_0));
-                    tv2[row_i][j1].setBackgroundColor(getResources().getColor(R.color.blueLitCyan));
-                } else if (j1 == 1) {
-                    tv2[row_i][j1].setText("Ф И О");
-                     tv2[row_i][j1].setWidth(getResources().getDimensionPixelSize(R.dimen.cell_width_1));
-                    tv2[row_i][j1].setBackgroundColor(getResources().getColor(R.color.blueMidCyan));
-                } else if (j1 == 2) {
-                    tv2[row_i][j1].setText("");
-                    tv2[row_i][j1].setWidth(getResources().getDimensionPixelSize(R.dimen.cell_width_2));
-                    tv2[row_i][j1].setBackgroundColor(getResources().getColor(R.color.blueLitCyan));
-                } else if (j1 == 3) {
-                     tv2[row_i][j1].setText("Зач");
-                     tv2[row_i][j1].setWidth(getResources().getDimensionPixelSize(R.dimen.cell_width_3));
-                     tv2[row_i][j1].setBackgroundColor(getResources().getColor(R.color.blueMidCyan));
-                } else if (j1 == 4) {
-                     tv2[row_i][j1].setText("КП");
-                     tv2[row_i][j1].setWidth(getResources().getDimensionPixelSize(R.dimen.cell_width_4));
-                     tv2[row_i][j1].setBackgroundColor(getResources().getColor(R.color.blueLitCyan));
-                } else if (j1 == 5) {
-                     tv2[row_i][j1].setText("Экз");
-                     tv2[row_i][j1].setWidth(getResources().getDimensionPixelSize(R.dimen.cell_width_5));
-                     tv2[row_i][j1].setBackgroundColor(getResources().getColor(R.color.blueMidCyan));
+                // Установка высоты шрифта
+                tv3[rowIndex][colIndex].setTextSize(14);
+                // Установка цвета текста текущего TextView
+                tv3[rowIndex][colIndex].setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+
+                if (colIndex == 0) {
+                    // Если первая ячейка
+                    // Ввод номера строки в текущий TextView
+                    tv3[rowIndex][colIndex].setText(String.valueOf(rowIndex + 1) + "\n" + "\n");
+                    // Установка минимальной ширины tv3
+                    tv3[rowIndex][colIndex].setWidth(70);
+                    // Установка цвета фона текущего TextView
+                    tv3[rowIndex][colIndex].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blueLitCyan));
+                } else if (colIndex == 1) {
+                    // Если вторая ячейка
+                    // Ввод текста в текущий TextView
+                    tv3[rowIndex][colIndex].setText("Фамилия" + "\n" + "Имя" + "\n" +
+                            "Отчество " + String.valueOf(rowIndex + 1));
+                    // Установка минимальной ширины tv3
+                    tv3[rowIndex][colIndex].setWidth(240);
+                    // Установка цвета фона текущего TextView
+                    tv3[rowIndex][colIndex].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
                 }
+                // Добавление TextView в строку tablRow3
+                tablRow3[rowIndex].addView(tv3[rowIndex][colIndex], colIndex);
 
-                // Добавление TextView в строку tablRow2
-                tablRow2[row_i].addView(tv2[row_i][j1], j1);
-
-                j1++;
+                colIndex++;
             }
-            // Добавление строки tablRow2 в таблицу
-            tableLayout2.addView(tablRow2[row_i], row_i);
+            // Добавление строки tablRow3 в таблицу i1
+            tableLayout3.addView(tablRow3[rowIndex], rowIndex);
 
-            row_i++;
+            rowIndex++;
         }
     }
 }
