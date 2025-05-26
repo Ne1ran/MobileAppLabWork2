@@ -25,4 +25,6 @@
     <color name="colBAquamarine">#7FFFD4</color>
     <color name="colBlueAqua">#00ffff</color>
     <color name="colBlueCyan">#00fff8</color>
+    <color name="blueLitCyan">#00ffc0</color>
+    <color name="blueMidCyan">#00ffd8</color>
 </resources>

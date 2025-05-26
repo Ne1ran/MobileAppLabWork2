@@ -5,4 +5,11 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="cell_width_0">48dp</dimen>
+    <dimen name="cell_width_1">48dp</dimen>
+    <dimen name="cell_width_2">48dp</dimen>
+    <dimen name="cell_width_3">48dp</dimen>
+    <dimen name="cell_width_4">48dp</dimen>
+    <dimen name="cell_width_5">48dp</dimen>
+
 </resources>
