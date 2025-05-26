@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.mobileapplabwork2.ui.home.HomeFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         // Демонстрация сообщения
         if (item.getItemId() == R.id.menu_11) {
              Toast.makeText(MainActivity.this, String.valueOf(item.getItemId()), Toast.LENGTH_LONG).show();
+             HomeFragment.addTabLayout(findViewById(R.id.tabLayout1)); // Вызов функции добавления вкладок
         }
 
         return super.onOptionsItemSelected(item);
