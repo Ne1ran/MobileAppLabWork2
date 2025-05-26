@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">MobileAppLabWork2</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_slideshow_1">Slideshow_1</string>
+
+    <string name="menu_10">Журнал</string>
+    <string name="menu_11">Создать журнал</string>
+    <string name="menu_12">Открыть журнал</string>
+    <string name="menu_13">Удалить страницу/журнал</string>
+    <string name="menu_14">Сохранить в файл</string>
+    <string name="menu_15">Загрузить журнал из файла</string>
+    <string name="menu_20">Редактирование</string>
+    <string name="menu_21">Создать страницу</string>
+    <string name="menu_22">Создать расписание</string>
+    <string name="menu_23">Редактировать расписание</string>
+    <string name="menu_24">Редактировать файл данных</string>
+    <string name="menu_25">Добавить страницу из файла</string>
+    <string name="menu_30">Настройка</string>
+    <string name="menu_31">Настройка страницы/журнала</string>
+    <string name="menu_32">Загрузить список студентов</string>
+    <string name="menu_33">Переслать файл на Email</string>
+    <string name="menu_34">Поиск</string>
+    <string name="menu_35">О программе/Инструкция</string>
+</resources>
