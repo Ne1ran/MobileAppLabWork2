@@ -1,5 +1,6 @@
 package com.example.mobileapplabwork2.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,17 @@ public class HomeFragment extends Fragment {
     public static int i1;
     // Счётчик циклов j1
     public static int j1; // Объявление счётчика j1
+    // Для управления загрузкой данных во вкладках в заголовок класса HomeFragment добавляется атрибут для хранения номера:
+    public static int NumTab; // Номер вкладки
+
+    // Объявление объекта HomeFragmentListener
+    HomeFragmentListener homeFragmentScrollview3;
+    HomeFragmentListener homeFragmentScrollview4;
+    HomeFragmentListener homeFragmentScrollview5;
+    HomeFragmentListener homeFragmentHorScroll4;
+    // Объявление объекта horizontalScrollView6
+    public static HorizontalScrollView horizontalScrollView6;
+    HomeFragmentListener homeFragmentHorScroll6;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -95,6 +107,8 @@ public class HomeFragment extends Fragment {
         scrollView4 = (ScrollView) root.findViewById(R.id.scrollView4);
         // Подключение scrollView5 к разметке
         scrollView5 = (ScrollView) root.findViewById(R.id.scrollView5);
+        // Подключение horizontalScrollView6 к разметке
+        horizontalScrollView6 = (HorizontalScrollView) root.findViewById(R.id.horizontalScrollView6);
 
         // Установка полной ширины индикатора
         tabLayout1.setTabIndicatorFullWidth(true);
@@ -108,7 +122,10 @@ public class HomeFragment extends Fragment {
                 // Обработка события выбора вкладки
                 i1 = tab.getPosition();
                 Toast.makeText(getActivity(), "onTabSelected " + String.valueOf(i1), Toast.LENGTH_LONG).show();
-                loadTable(i1);
+                // В файле HomeFragment.java в функции onCreateView в функции-обработчике onTabSelected событий навигации по вкладкам в случае смены вкладки выполняется удаление визуальных компонентов для вкладки с предыдущим номером и создание визуальных компонентов для вкладки с текущим номером:
+                deleteTable(NumTab); // Функция очистки таблиц
+                loadTable(i1); // Функция загрузки таблиц
+                NumTab = i1; // После выполнения указанных действий при переходе ко вкладки на вкладку будет выполнятся очистка визуальных компонентов и обновление содержимого вкладки.
             }
 
             @Override
@@ -123,6 +140,47 @@ public class HomeFragment extends Fragment {
                 // Обработка события повторного выбора вкладки
                 i1 = tab.getPosition();
                 Toast.makeText(getActivity(), "onTabReselected " + String.valueOf(i1), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        // В функции onCreateView размещаются функции открытого интерфейса:
+        // Функция-слушатель для события прокрутки scrollView3 по вертикали
+        scrollView3.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                homeFragmentScrollview3.onHomeFragmentScrollview3(0, scrollX, scrollY); // Обращение к функции HomeFragmentScrollview3
+            }
+        });
+
+        // Функция-слушатель для события прокрутки scrollView4 по вертикали
+        scrollView4.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                homeFragmentScrollview4.onHomeFragmentScrollview4(0, scrollX, scrollY); // Обращение к функции HomeFragmentScrollview4
+            }
+        });
+
+        // Функция-слушатель для события прокрутки scrollView5 по вертикали
+        scrollView5.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                homeFragmentScrollview5.onHomeFragmentScrollview5(0, scrollX, scrollY); // Обращение к функции HomeFragmentScrollview5
+            }
+        });
+
+        // Функция-слушатель для события прокрутки horizontalScrollView4 по горизонтали
+        horizontalScrollView4.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                homeFragmentHorScroll4.onHomeFragmentHorScroll4(1, scrollX, scrollY); // Обращение к функции HomeFragmentHorScroll4
+            }
+        });
+
+        // Функция-слушатель для события прокрутки horizontalScrollView6 по горизонтали
+        horizontalScrollView6.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                homeFragmentHorScroll6.onHomeFragmentHorScroll6(1, scrollX, scrollY); // Обращение к функции HomeFragmentHorScroll6
             }
         });
 
@@ -156,9 +214,14 @@ public class HomeFragment extends Fragment {
         scrollView4 = (ScrollView) getActivity().findViewById(R.id.scrollView4);
         // Подключение scrollView5 к разметке в onStart
         scrollView5 = (ScrollView) getActivity().findViewById(R.id.scrollView5);
+        // Подключение horizontalScrollView6 к разметке в onStart
+        horizontalScrollView6 = (HorizontalScrollView) getActivity().findViewById(R.id.horizontalScrollView6);
 
         // Загрузка таблицы при старте фрагмента
         loadTable(i1);
+        // В функции onStart при запуске приложения выполняется загрузка данных на вкладку с номером 0:
+        NumTab = 0; // Номер вкладки
+        loadTable(NumTab); // Функция загрузки таблиц
     }
 
     public static void addTabLayout(TabLayout tabLayout) {
@@ -322,20 +385,20 @@ public class HomeFragment extends Fragment {
                 // Логика заполнения ячеек tableLayout5 в соответствии со скриншотом ТЗ
                 if (colIndex5 == 0) {
                     // Первая ячейка (индекс 0)
-                     tv5[rowIndex5][colIndex5].setText(String.valueOf(rowIndex5 + 1) + "\n" + "\n"); // Ввод номера строки
-                     tv5[rowIndex5][colIndex5].setWidth(70); // Ширина
-                     tv5[rowIndex5][colIndex5].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blueLitCyan)); // Цвет фона
+                    tv5[rowIndex5][colIndex5].setText(String.valueOf(rowIndex5 + 1) + "\n" + "\n"); // Ввод номера строки
+                    tv5[rowIndex5][colIndex5].setWidth(70); // Ширина
+                    tv5[rowIndex5][colIndex5].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blueLitCyan)); // Цвет фона
                 } else if (colIndex5 == 1) {
                     // Вторая ячейка (индекс 1)
-                     tv5[rowIndex5][colIndex5].setText("Фамилия" + "\n" + "Имя" + "\n" +
+                    tv5[rowIndex5][colIndex5].setText("Фамилия" + "\n" + "Имя" + "\n" +
                             "Отчество " + String.valueOf(rowIndex5 + 1)); // Ввод текста
-                     tv5[rowIndex5][colIndex5].setWidth(240); // Ширина
-                     tv5[rowIndex5][colIndex5].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white)); // Цвет фона
+                    tv5[rowIndex5][colIndex5].setWidth(240); // Ширина
+                    tv5[rowIndex5][colIndex5].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white)); // Цвет фона
                 } else if (colIndex5 == 2) {
-                     // Третья ячейка (индекс 2)
-                     tv5[rowIndex5][colIndex5].setText(String.valueOf(rowIndex5 + 1)); // Ввод текста (номер строки)
-                     tv5[rowIndex5][colIndex5].setWidth(70); // Ширина
-                     tv5[rowIndex5][colIndex5].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blueMidCyan)); // Цвет фона
+                    // Третья ячейка (индекс 2)
+                    tv5[rowIndex5][colIndex5].setText(String.valueOf(rowIndex5 + 1)); // Ввод текста (номер строки)
+                    tv5[rowIndex5][colIndex5].setWidth(70); // Ширина
+                    tv5[rowIndex5][colIndex5].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blueMidCyan)); // Цвет фона
                 }
 
                 // Добавление TextView в строку
@@ -349,4 +412,55 @@ public class HomeFragment extends Fragment {
             rowIndex5++;
         }
     }
+
+    // Также добавляется функция deleteTable для удаления всех визуальных компонентов со вкладки с номером NPL.
+    public void deleteTable(int NPL) {
+        if (tableLayout1 != null) {
+            ((TableLayout) requireView().findViewById(R.id.tableLayout1)).removeAllViews(); // Удаление компонентов из таблицы tableLayout1
+        }
+        if (tableLayout2 != null) {
+            ((TableLayout) requireView().findViewById(R.id.tableLayout2)).removeAllViews(); // Удаление компонентов из таблицы tableLayout2
+        }
+        if (tableLayout3 != null) {
+            ((TableLayout) requireView().findViewById(R.id.tableLayout3)).removeAllViews(); // Удаление компонентов из таблицы tableLayout3
+        }
+        if (tableLayout4 != null) {
+            ((TableLayout) requireView().findViewById(R.id.tableLayout4)).removeAllViews(); // Удаление компонентов из таблицы tableLayout1
+        }
+        if (tableLayout5 != null) {
+            ((TableLayout) requireView().findViewById(R.id.tableLayout5)).removeAllViews(); // Удаление компонентов из таблицы tableLayout5
+        }
+        if (horizontalScrollView6 != null) {
+            ((HorizontalScrollView) requireView().findViewById(R.id.horizontalScrollView6)).removeAllViews(); // Удаление компонентов из таблицы tableLayout6
+        }
+    }
+
+    // Для организации взаимодействия компонентов и обеспечения синхронной прокрутки компонентов ScrollView3, ScrollView4, ScrollView5, horizontalScrollView4, horizontalScrollView6 создаётся открытый интерфейс и объявляются соответствующие методы:
+    public interface HomeFragmentListener {
+        public void onHomeFragmentScrollview3(int ScrollDir, int ScX, int ScY); // Функция прокрутки ScrollView3
+
+        public void onHomeFragmentScrollview4(int ScrollDir, int ScX, int ScY); // Функция прокрутки ScrollView4
+
+        public void onHomeFragmentScrollview5(int ScrollDir, int ScX, int ScY); // Функция прокрутки ScrollView5
+
+        public void onHomeFragmentHorScroll4(int ScrollDir, int ScX, int ScY); // Функция прокрутки horizontalScrollView4
+
+        public void onHomeFragmentHorScroll6(int ScrollDir, int ScX, int ScY); // Функция прокрутки horizontalScrollView6
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context); // Функция присоединения интерфейса к контексту
+        try {
+            homeFragmentScrollview3 = (HomeFragmentListener) context;
+            homeFragmentScrollview4 = (HomeFragmentListener) context;
+            homeFragmentScrollview5 = (HomeFragmentListener) context;
+            homeFragmentHorScroll4 = (HomeFragmentListener) context;
+            homeFragmentHorScroll6 = (HomeFragmentListener) context;
+        } catch (ClassCastException e) {
+            // В случае ошибки
+            throw new ClassCastException(context + " must implement OnHomeFragmentListener"); // Вывод предупредительного сообщения
+        } // Конец секции обработки ошибки
+    }
+
 }

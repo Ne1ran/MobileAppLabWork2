@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import android.widget.ScrollView;
+import android.widget.HorizontalScrollView;
 
 import com.example.mobileapplabwork2.ui.home.HomeFragment;
 import com.google.android.material.snackbar.Snackbar;
@@ -20,7 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mobileapplabwork2.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomeFragment.HomeFragmentListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -109,5 +111,58 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onHomeFragmentScrollview3(int ScrollDir, int ScX, int ScY) {
+        if (HomeFragment.scrollView3.isShown()) { // Если фрагмент активен
+            // Обращение к фрагменту с текущим id
+            if (ScrollDir == 0) { // Если прокрутка по вертикали
+                ((ScrollView) findViewById(R.id.scrollView4)).scrollTo(ScX, ScY);
+                ((ScrollView) findViewById(R.id.scrollView5)).scrollTo(ScX, ScY); // Прокрутка ScrollView5 по вертикали
+            } // Конец условия if (ScrollDir == 0)
+        } // Конец условия if (HomeFragment.scrollView3.isShown())
+    }
+
+    @Override
+    public void onHomeFragmentScrollview4(int ScrollDir, int ScX, int ScY) {
+        if (HomeFragment.scrollView4.isShown()) { // Если фрагмент активен
+            // Обращение к фрагменту с текущим id
+            if (ScrollDir == 0) { // Если прокрутка по вертикали
+                ((ScrollView) findViewById(R.id.scrollView3)).scrollTo(ScX, ScY);
+                ((ScrollView) findViewById(R.id.scrollView5)).scrollTo(ScX, ScY); // Прокрутка ScrollView5 по вертикали
+            } // Конец условия if (ScrollDir == 0)
+        } // Конец условия if (HomeFragment.scrollView4.isShown())
+    }
+
+    @Override
+    public void onHomeFragmentScrollview5(int ScrollDir, int ScX, int ScY) {
+        if (HomeFragment.scrollView5.isShown()) { // Если фрагмент активен
+            // Обращение к фрагменту с текущим id
+            if (ScrollDir == 0) { // Если прокрутка по вертикали
+                ((ScrollView) findViewById(R.id.scrollView3)).scrollTo(ScX, ScY);
+                ((ScrollView) findViewById(R.id.scrollView4)).scrollTo(ScX, ScY); // Прокрутка ScrollView4 по вертикали
+            } // Конец условия if (ScrollDir == 0)
+        } // Конец условия if (HomeFragment.scrollView5.isShown())
+    }
+
+    @Override
+    public void onHomeFragmentHorScroll4(int ScrollDir, int ScX, int ScY) {
+        if (HomeFragment.horizontalScrollView4.isShown()) { // Если фрагмент активен
+            // Обращение к фрагменту с текущим id
+            if (ScrollDir == 1) { // Если прокрутка по горизонтали
+                ((HorizontalScrollView) findViewById(R.id.horizontalScrollView6)).scrollTo(ScX, ScY);
+            } // Конец условия if (ScrollDir == 1)
+        } // Конец условия if (HomeFragment.horizontalScrollView4.isShown())
+    }
+
+    @Override
+    public void onHomeFragmentHorScroll6(int ScrollDir, int ScX, int ScY) {
+        if (HomeFragment.horizontalScrollView6.isShown()) { // Если фрагмент активен
+            // Обращение к фрагменту с текущим id
+            if (ScrollDir == 1) { // Если прокрутка по горизонтали
+                ((HorizontalScrollView) findViewById(R.id.horizontalScrollView4)).scrollTo(ScX, ScY);
+            } // Конец условия if (ScrollDir == 1)
+        } // Конец условия if (HomeFragment.horizontalScrollView6.isShown())
     }
 }

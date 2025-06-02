@@ -121,4 +121,25 @@
 
     </RelativeLayout>
 
+    <!-- Добавлен HorizontalScrollView для синхронной прокрутки -->
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Здесь можно добавить содержимое для горизонтальной прокрутки, например, LinearLayout с элементами -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Добавьте сюда ваши элементы -->
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
