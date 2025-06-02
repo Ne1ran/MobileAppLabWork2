@@ -30,4 +30,7 @@
     <string name="menu_33">Переслать файл на Email</string>
     <string name="menu_34">Поиск</string>
     <string name="menu_35">О программе/Инструкция</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="monday">Monday</string>
 </resources>
