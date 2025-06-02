@@ -25,34 +25,21 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
-    // Компонент произвольной разметки
     public static RelativeLayout relativeLayout1;
-    // Компонент со вкладками
     public static TabLayout tabLayout1;
-    // Компонент табличной разметки
     public static TableLayout tableLayout1;
-    // Объявление объекта табличная разметка tableLayout2
-    public static TableLayout tableLayout2; // Объявление TableLayout2
-    // Объявление объекта табличная разметка tableLayout3
+    public static TableLayout tableLayout2;
     public static TableLayout tableLayout3;
-    // Объявление объекта tableLayout4
     public static TableLayout tableLayout4;
-    // Объявление объекта tableLayout5
     public static TableLayout tableLayout5;
-    // Объявление объекта horizontalScrollView4
     public static HorizontalScrollView horizontalScrollView4;
-    // Объявление объекта scrollView3, scrollView4 и scrollView5
     public static ScrollView scrollView3, scrollView4, scrollView5;
-    // Массив строк таблицы tablRow1
     public static TableRow.LayoutParams tlpF3;
     public static TableRow[] tableRow1, tableRow2, tableRow3, tableRow4, tableRow5;
     public static TextView[][] tv1, tv2, tv3, tv4, tv5;
-    // Счётчик циклов
     public static int i1;
-    // Счётчик циклов j1
-    public static int j1; // Объявление счётчика j1
-    // Для управления загрузкой данных во вкладках в заголовок класса HomeFragment добавляется атрибут для хранения номера:
-    public static int NumTab; // Номер вкладки
+    public static int j1;
+    public static int NumTab;
 
     HomeFragmentListener homeFragmentScrollview3;
     HomeFragmentListener homeFragmentScrollview4;
@@ -287,52 +274,33 @@ public class HomeFragment extends Fragment {
 
     private void createTable4() {
         tableRow4 = new TableRow[20];
-        // Создание массива строк таблицы tableRow5 (20 строк)
         tv4 = new TextView[20][20];
 
-        // Обнуление счётчика цикла по строкам таблицы 4
         int rowIndex4 = 0;
-        // Цикл по строкам таблицы 4 (до 20, обучаемых)
         while (rowIndex4 < 20) {
-            // Создание строки в tablRow4
             tableRow4[rowIndex4] = new TableRow(getActivity());
-            // Установка интервалов между компонентами
             tableRow4[rowIndex4].setPadding(1, 1, 1, 1);
-            // Установка параметров строки
             tableRow4[rowIndex4].setLayoutParams(tlpF3);
 
-            // Обнуление счётчика цикла по элементам строки таблицы 4
             int colIndex4 = 0;
-            // Цикл по элементам строки таблицы 4
             while (colIndex4 < 20) {
-                // Создание очередного TextView
                 tv4[rowIndex4][colIndex4] = new TextView(getActivity());
-                // Установка цвета текста
-                tv4[rowIndex4][colIndex4].setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
-                // Установка размера шрифта
                 tv4[rowIndex4][colIndex4].setTextSize((float) 14);
+                tv4[rowIndex4][colIndex4].setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
 
-                if ((colIndex4 % 2) != 0) { // Если нечётная ячейка
-                    // Ввод номера строки в текущий TextView
+                if ((colIndex4 % 2) != 0) {
                     tv4[rowIndex4][colIndex4].setText(rowIndex4 + 1 + "\n" + "\n");
-                    // Установка минимальной ширины
                     tv4[rowIndex4][colIndex4].setWidth(100);
-                    // Установка цвета фона
                     tv4[rowIndex4][colIndex4].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blueLitCyan));
-                } else { // Если чётная ячейка
-                    // Ввод текста
+                } else {
                     tv4[rowIndex4][colIndex4].setText(rowIndex4 + 1 + "\n" + "\n");
-                    // Установка минимальной ширины
                     tv4[rowIndex4][colIndex4].setWidth(100);
-                    // Установка цвета фона
                     tv4[rowIndex4][colIndex4].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blueLitCyan));
                 }
-                // Добавление TextView в строку
                 tableRow4[rowIndex4].addView(tv4[rowIndex4][colIndex4], colIndex4);
 
                 colIndex4++;
             }
-            // Добавление строки в таблицу 4
             tableLayout4.addView(tableRow4[rowIndex4], rowIndex4);
 
             rowIndex4++;
@@ -340,8 +308,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void createTable5() {
-        tableRow5 = new TableRow[20]; // Assuming NPL is 0 or some base index
-        tv5 = new TextView[20][3];   // Assuming NPL is 0 or some base index
+        tableRow5 = new TableRow[20];
+        tv5 = new TextView[20][3];
 
         int i1 = 0;
         while (i1 < 20) {
@@ -360,7 +328,7 @@ public class HomeFragment extends Fragment {
                     tv5[i1][j1].setWidth(70);
                     tv5[i1][j1].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colBlueLitCyan));
                 } else {
-                    tv5[i1][j1].setText(j1 + 1 + "\n" + "\n"); // This looks like it might be a placeholder or error
+                    tv5[i1][j1].setText(j1 + 1 + "\n" + "\n");
                     tv5[i1][j1].setWidth(70);
                     tv5[i1][j1].setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colBlueMidCyan));
                 }
@@ -384,17 +352,16 @@ public class HomeFragment extends Fragment {
         horizontalScrollView6.removeAllViews();
     }
 
-    // Для организации взаимодействия компонентов и обеспечения синхронной прокрутки компонентов ScrollView3, ScrollView4, ScrollView5, horizontalScrollView4, horizontalScrollView6 создаётся открытый интерфейс и объявляются соответствующие методы:
     public interface HomeFragmentListener {
-        void onHomeFragmentScrollview3(int ScrollDir, int ScX, int ScY); // Функция прокрутки ScrollView3
+        void onHomeFragmentScrollview3(int ScrollDir, int ScX, int ScY);
 
-        void onHomeFragmentScrollview4(int ScrollDir, int ScX, int ScY); // Функция прокрутки ScrollView4
+        void onHomeFragmentScrollview4(int ScrollDir, int ScX, int ScY);
 
-        void onHomeFragmentScrollview5(int ScrollDir, int ScX, int ScY); // Функция прокрутки ScrollView5
+        void onHomeFragmentScrollview5(int ScrollDir, int ScX, int ScY);
 
-        void onHomeFragmentHorScroll4(int ScrollDir, int ScX, int ScY); // Функция прокрутки horizontalScrollView4
+        void onHomeFragmentHorScroll4(int ScrollDir, int ScX, int ScY);
 
-        void onHomeFragmentHorScroll6(int ScrollDir, int ScX, int ScY); // Функция прокрутки horizontalScrollView6
+        void onHomeFragmentHorScroll6(int ScrollDir, int ScX, int ScY);
     }
 
     @Override
@@ -407,7 +374,7 @@ public class HomeFragment extends Fragment {
             homeFragmentHorScroll4 = (HomeFragmentListener) context;
             homeFragmentHorScroll6 = (HomeFragmentListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context + " must implement OnHomeFragmentListener"); // Вывод предупредительного сообщения
+            throw new ClassCastException(context + " must implement OnHomeFragmentListener");
         }
     }
 
