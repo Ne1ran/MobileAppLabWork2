@@ -48,10 +48,12 @@ public class HomeFragment extends Fragment {
     public static HorizontalScrollView horizontalScrollView6;
     HomeFragmentListener homeFragmentHorScroll6;
 
+    // Создание и инициализация представления фрагмента
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // Подключение представлений из макета
         relativeLayout1 = root.findViewById(R.id.relativeLayout1);
         tabLayout1 = root.findViewById(R.id.tabLayout1);
         tableLayout1 = root.findViewById(R.id.tableLayout1);
@@ -65,13 +67,16 @@ public class HomeFragment extends Fragment {
         scrollView5 = root.findViewById(R.id.scrollView5);
         horizontalScrollView6 = root.findViewById(R.id.horizontalScrollView6);
 
+        // Настройка TabLayout
         tabLayout1.setTabIndicatorFullWidth(true);
         tabLayout1.setTabMode(TabLayout.MODE_SCROLLABLE);
+        // Добавление слушателя выбора вкладки
         tabLayout1.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 i1 = tab.getPosition();
                 Toast.makeText(getActivity(), "onTabSelected " + i1, Toast.LENGTH_LONG).show();
+                // Удаление и загрузка данных таблицы при выборе вкладки
                 deleteTableData();
                 loadTable(i1);
                 NumTab = i1;
@@ -90,6 +95,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        // Настройка слушателей прокрутки для синхронизации
         scrollView3.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             homeFragmentScrollview3.onHomeFragmentScrollview3(0, scrollX, scrollY);
         });
@@ -113,12 +119,14 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    // Очистка привязки представлений при уничтожении фрагмента
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
+    // Повторное подключение представлений при старте фрагмента
     @Override
     public void onStart() {
         super.onStart();
@@ -136,16 +144,19 @@ public class HomeFragment extends Fragment {
         horizontalScrollView6 = getActivity().findViewById(R.id.horizontalScrollView6);
     }
 
+    // Статический метод для добавления вкладок в TabLayout
     public static void addTabLayout(TabLayout tabLayout) {
         tabLayout.addTab(tabLayout.newTab().setText("23ИВ16з\n" + "Информационные системы "), 0);
         tabLayout.addTab(tabLayout.newTab().setText("23ИВ16з\n" + "Технология ПО "), 1);
         tabLayout.addTab(tabLayout.newTab().setText("23ИВ16з\n" + "Проектир моб. прил. "), 2);
     }
 
+    // Загрузка данных таблиц в зависимости от выбранной вкладки
     public void loadTable(int i1) {
 
         tlpF3 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
 
+        // Вызов методов для создания и заполнения таблиц
         createTable1();
         createTable2();
         createTable3();
@@ -153,6 +164,7 @@ public class HomeFragment extends Fragment {
         createTable5();
     }
 
+    // Создание и заполнение TableLayout1
     private void createTable1() {
         tv1 = new TextView[1][3];
         tableRow1 = new TableRow[1];
@@ -186,6 +198,7 @@ public class HomeFragment extends Fragment {
         tableLayout1.addView(tableRow1[0], 0);
     }
 
+    // Создание и заполнение TableLayout2
     private void createTable2() {
         tableRow2 = new TableRow[2];
         tv2 = new TextView[2][6];
@@ -241,9 +254,11 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // Создание и заполнение TableLayout3
     private void createTable3() {
         tableRow3 = new TableRow[20];
-        tv3 = new TextView[20][2];int rowIndex = 0;
+        tv3 = new TextView[20][2];
+        int rowIndex = 0;
         while (rowIndex < 20) {
             tableRow3[rowIndex] = new TableRow(getActivity());
             tableRow3[rowIndex].setPadding(1, 1, 1, 1);
@@ -272,6 +287,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // Создание и заполнение TableLayout4
     private void createTable4() {
         tableRow4 = new TableRow[20];
         tv4 = new TextView[20][20];
@@ -307,6 +323,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // Создание и заполнение TableLayout5
     private void createTable5() {
         tableRow5 = new TableRow[20];
         tv5 = new TextView[20][3];
@@ -343,6 +360,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // Удаление данных из всех таблиц
     public void deleteTableData() {
         tableLayout1.removeAllViews();
         tableLayout2.removeAllViews();
@@ -352,6 +370,7 @@ public class HomeFragment extends Fragment {
         horizontalScrollView6.removeAllViews();
     }
 
+    // Интерфейс для взаимодействия с активностью-слушателем прокрутки
     public interface HomeFragmentListener {
         void onHomeFragmentScrollview3(int ScrollDir, int ScX, int ScY);
 
@@ -364,6 +383,7 @@ public class HomeFragment extends Fragment {
         void onHomeFragmentHorScroll6(int ScrollDir, int ScX, int ScY);
     }
 
+    // Присоединение фрагмента к активности и инициализация слушателей
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
