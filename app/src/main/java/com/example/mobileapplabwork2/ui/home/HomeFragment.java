@@ -23,6 +23,9 @@ import com.google.android.material.tabs.TabLayout;
 
 public class HomeFragment extends Fragment {
 
+    public static int i1, j1, idRowI, idColI, idNPLI, HigCell, CouCell = 3, NumRec, NumCol, NumTab, WidFIO = 220;
+    public static float MulCell = 1.057F;
+
     private FragmentHomeBinding binding;
 
     public static RelativeLayout relativeLayout1;
@@ -37,9 +40,6 @@ public class HomeFragment extends Fragment {
     public static TableRow.LayoutParams tlpF3;
     public static TableRow[] tableRow1, tableRow2, tableRow3, tableRow4, tableRow5;
     public static TextView[][] tv1, tv2, tv3, tv4, tv5;
-    public static int i1;
-    public static int j1;
-    public static int NumTab;
 
     HomeFragmentListener homeFragmentScrollview3;
     HomeFragmentListener homeFragmentScrollview4;
@@ -216,7 +216,7 @@ public class HomeFragment extends Fragment {
                 tv2[i1][j1].setTextSize((float) 14);
                 tv2[i1][j1].setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
 
-                if (i1 ==0) {
+                if (i1 == 0) {
                     if (j1 == 0) {
                         tv2[i1][j1].setText("№");
                         tv2[i1][j1].setWidth(55);

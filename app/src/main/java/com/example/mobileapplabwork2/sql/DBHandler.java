@@ -6,12 +6,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-public class DBHandler  extends SQLiteOpenHelper {
+public class DBHandler extends SQLiteOpenHelper {
     public static Context databaseContext;
+    public static SQLiteDatabase.CursorFactory factory = null;
+    public static DBHandler DBHandler;
+
+    public static SQLiteDatabase database;
 
     public DBHandler(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
         databaseContext = context;
+        database = this.getWritableDatabase();
+        DBHandler = this;
     }
 
     @Override

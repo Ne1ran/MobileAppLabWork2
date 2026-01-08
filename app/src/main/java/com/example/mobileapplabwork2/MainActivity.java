@@ -1,29 +1,47 @@
 package com.example.mobileapplabwork2;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.mobileapplabwork2.ui.home.HomeFragment;
-import com.example.mobileapplabwork2.ui.journal.JournalFragment;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
-
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mobileapplabwork2.databinding.ActivityMainBinding;
+import com.example.mobileapplabwork2.sql.DBHandler;
+import com.example.mobileapplabwork2.ui.home.HomeFragment;
+import com.example.mobileapplabwork2.ui.journal.JournalFragment;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.HomeFragmentListener, JournalFragment.onJournalFragmentListener {
 
+    public static int DatabaseVersion = 1;
+    public static int i1, j1;
+    public static String DatabaseName = "tbookdb.db",
+            JMainTabl = "JMainTabl",
+            T_idTabl = "_idTabl",
+            TNameTab = "NameTab",
+            T_id_FIO = "_idFIO_",
+            TFIO = "FIO",
+            TSertifZ = "SertifZ",
+            TSertifK = "SertifK",
+            TSertifE = "SertifE",
+            TSertifD = "SertifD",
+            Str01, Str02, Str03, Str04, Str05, Str06;
+
+    public static String[] T_Atten;
     private AppBarConfiguration mAppBarConfiguration;
 
     public static String JBaseName;
@@ -31,6 +49,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
     public static File SDPath, SDFile;
     public static AlertDialog.Builder allDB;
     public HomeFragment HomeFragment;
+    public DBHandler dbHelper;
+    public SQLiteDatabase db;
+    public ContentValues contentValues;
+    public Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
         binding.appBarMain.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
                 .setAnchorView(R.id.fab).show());
-        
+
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
@@ -71,6 +93,29 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Создание объекта dbHelper для работы с базой данных
+        dbHelper = new DBHandler(MainActivity.this, DatabaseName, DBHandler.factory, DatabaseVersion);
+        db = dbHelper.getReadableDatabase();
+        contentValues = new ContentValues();
+        cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type = 'table' AND name = '" + JMainTabl + "'", null);
+        if (cursor.getCount() == 0) {
+            Str06 = "Главная таблица " + String.valueOf(JMainTabl) + " повреждена или отсутствует. Удалите базу данных и создайте её заново!";
+            Toast.makeText(MainActivity.this, Str06, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (cursor != null) {
+            cursor.close();
+        }
+        dbHelper.close();
     }
 
     @Override
@@ -98,9 +143,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
 
         // Обработка нажатия на пункт меню с id R.id.menu_11
         if (item.getItemId() == R.id.menu_11) {
-             Toast.makeText(MainActivity.this, String.valueOf(item.getItemId()), Toast.LENGTH_LONG).show();
-             // Вызов функции добавления вкладок в HomeFragment (статический метод)
-             HomeFragment.addTabLayout(findViewById(R.id.tabLayout1));
+            Toast.makeText(MainActivity.this, String.valueOf(item.getItemId()), Toast.LENGTH_LONG).show();
+            // Вызов функции добавления вкладок в HomeFragment (статический метод)
+            HomeFragment.addTabLayout(findViewById(R.id.tabLayout1));
         }
 
         return super.onOptionsItemSelected(item);
