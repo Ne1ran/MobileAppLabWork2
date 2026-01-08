@@ -1,6 +1,8 @@
 package com.example.mobileapplabwork2.ui.home;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +19,10 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.mobileapplabwork2.MainActivity;
 import com.example.mobileapplabwork2.R;
 import com.example.mobileapplabwork2.databinding.FragmentHomeBinding;
+import com.example.mobileapplabwork2.sql.DBHandler;
 import com.google.android.material.tabs.TabLayout;
 
 public class HomeFragment extends Fragment {
@@ -35,11 +39,15 @@ public class HomeFragment extends Fragment {
     public static TableLayout tableLayout3;
     public static TableLayout tableLayout4;
     public static TableLayout tableLayout5;
+    public static TableLayout tableLayout6;
     public static HorizontalScrollView horizontalScrollView4;
     public static ScrollView scrollView3, scrollView4, scrollView5;
     public static TableRow.LayoutParams tlpF3;
-    public static TableRow[] tableRow1, tableRow2, tableRow3, tableRow4, tableRow5;
-    public static TextView[][] tv1, tv2, tv3, tv4, tv5;
+    public static TableRow[] tableRow1, tableRow2, tableRow3, tableRow4, tableRow5, tableRow6;
+    public static TextView[][] tv1, tv2, tv3, tv4, tv5, tv6;
+    public static SQLiteDatabase db;
+    public static Cursor cursor;
+    public static String JBaseName;
 
     HomeFragmentListener homeFragmentScrollview3;
     HomeFragmentListener homeFragmentScrollview4;
@@ -396,6 +404,52 @@ public class HomeFragment extends Fragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(context + " must implement OnHomeFragmentListener");
         }
+    }
+
+    // В функции createPage класса HomeFragment выполняется удаление визуальных компонентов предыдущей вкладки и создание визуальных компонентов текущей вкладки:
+    public static void createPage(Context hContext, int NPL, String BaseName, int NumPage) {
+        if (tableLayout1 != null) {
+            tableLayout1.removeAllViews(); // Удаление компонентов из таблицы tableLayout1
+        }
+        if (tableLayout2 != null) {
+            tableLayout2.removeAllViews(); // Удаление компонентов из таблицы tableLayout1
+        }
+        if (tableLayout3 != null) {
+            tableLayout3.removeAllViews(); // Удаление компонентов из таблицы tableLayout1
+        }
+        if (tableLayout4 != null) {
+            tableLayout4.removeAllViews(); // Удаление компонентов из таблицы tableLayout1
+        }
+        if (tableLayout5 != null) {
+            tableLayout5.removeAllViews(); // Удаление компонентов из таблицы tableLayout1
+        }
+        if (tableLayout6 != null) {
+            tableLayout6.removeAllViews(); // Удаление компонентов из таблицы tableLayout1
+        }
+
+        // Запрос в базу и извлечение данных в cursor
+        JBaseName = BaseName; // Название таблицы базы данных
+        db = DBHandler.database;
+        cursor = db.query(BaseName, null, null, null, null, null, null);
+        NumTab = NPL; // Сохранение номера вкладки
+        NumRec = cursor.getCount(); // Количество строк (записей) таблицы
+        NumCol = cursor.getColumnCount(); // Количество колонок (полей) таблицы
+
+        tableRow1 = new TableRow[1]; // Создание массива строк tablRow1
+        tableRow2 = new TableRow[2]; // Создание массива строк tablRow2
+        tableRow3 = new TableRow[NumRec]; // Создание массива строк tablRow3
+        tableRow4 = new TableRow[NumRec]; // Создание массива строк tablRow4
+        tableRow5 = new TableRow[NumRec]; // Создание массива строк tablRow5
+        tableRow6 = new TableRow[1]; // Создание массива строк tablRow6
+        tv1 = new TextView[0][3]; // Создание массива текстовых меток tv1
+        tv2 = new TextView[2][6]; // Создание массива текстовых меток tv2
+        tv3 = new TextView[NumRec][2]; // Создание массива текстовых меток tv3
+        tv4 = new TextView[NumRec][NumCol]; // Создание массива текстовых меток tv4
+        tv5 = new TextView[NumRec][3]; // Создание массива текстовых меток tv5
+        tv6 = new TextView[0][NumRec]; // Создание массива текстовых меток tv6
+
+        tableLayout1.setColumnStretchable(2, true);
+        tableLayout2.setColumnStretchable(2, true);
     }
 
 }
