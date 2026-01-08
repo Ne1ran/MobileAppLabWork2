@@ -6,9 +6,11 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.mobileapplabwork2.ui.home.HomeFragment;
+import com.example.mobileapplabwork2.ui.journal.JournalFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,13 +20,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mobileapplabwork2.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.HomeFragmentListener {
+import java.io.File;
+
+public class MainActivity extends AppCompatActivity implements HomeFragment.HomeFragmentListener, JournalFragment.onJournalFragmentListener {
 
     private AppBarConfiguration mAppBarConfiguration;
+
+    public static String JBaseName;
+    public static int JNumPage, JNumLearn, JNumStudents, FragmentStart = 0;
+    public static File SDPath, SDFile;
+    public static AlertDialog.Builder allDB;
+    public HomeFragment HomeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        HomeFragment = new HomeFragment();
 
         // Инициализация привязки представлений и установка содержимого
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -53,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
 
         // Настройка навигационного компонента
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_journal, R.id.nav_slideshow)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -146,5 +158,18 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
                 findViewById(R.id.horizontalScrollView4).scrollTo(ScX, ScY);
             }
         }
+    }
+
+    @Override
+    public void JournalFragmentCreate(int num, String name, int page, int learn, int students) {
+        if (num == 1) {
+            JBaseName = name;
+            JNumPage = page;
+            JNumLearn = learn;
+            JNumStudents = students;
+        }
+
+        this.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, this.HomeFragment).commit();
+        this.setTitle("Home");
     }
 }
