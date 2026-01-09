@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Debug;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -141,8 +142,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
             try {
                 cursor = db.query(JMainTabl, null, null, null, null, null, null);
                 cursor.moveToFirst();
-                homeFragment.createPage(DBHandler.databaseContext, 0, DatabaseName, JNumPage);
+                homeFragment.createPage(DBHandler.databaseContext, 0, JBaseName, JNumPage);
             } catch (Exception e) {
+                System.out.println("DB error message " + e.getMessage());
                 Toast.makeText(MainActivity.this, "Unknown error while trying to open database. e.message=" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
@@ -218,14 +220,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
                 Str03 = "";
                 j1 = 0;
                 while (j1 < learn) {
-                    T_Atten[j1] = "2025.02.12." + (j1 + 1);
-                    Str03 = Str03 + "'" + T_Atten[j1] + "' text, ";
+                    T_Atten[j1] = "d2025_02_12_" + (j1 + 1);
+                    Str03 = Str03 + T_Atten[j1] + " text, ";
                     j1++;
                 }
                 Str04 = "'" + TSertifZ + "' text, '" + TSertifK + "' integer, '" + TSertifE + "' integer, '" + TSertifD + "' text)";
                 Str05 = Str02 + Str03 + Str04;
                 db.execSQL(Str05);
-
 
                 contentValues.clear();
                 contentValues.put(T_id_FIO, "0");
@@ -234,9 +235,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
                 j1 = 0;
 
                 while (j1 < learn) {
-
                     contentValues.put(T_Atten[j1], String.valueOf(T_Atten[j1]));
-
                     j1++;
                 }
                 contentValues.put(TSertifZ, "Z");

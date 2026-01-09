@@ -67,7 +67,7 @@ public class JournalFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        editTextText.setText("2025_2_gtu");
+        editTextText.setText("gtu_2025_2");
         editTextText2.setText("12");
         editTextText3.setText("20");
         editTextText4.setText("25");
