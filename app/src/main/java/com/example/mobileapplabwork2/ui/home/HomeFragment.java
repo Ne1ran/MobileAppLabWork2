@@ -2,7 +2,6 @@ package com.example.mobileapplabwork2.ui.home;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -31,7 +30,7 @@ import com.google.android.material.tabs.TabLayout;
 
 public class HomeFragment extends Fragment {
 
-    public static int i1, j1, idRowI, idColI, idNPLI, HigCell, CouCell = 3, NumRec, NumCol, NumTab, WidFIO = 220;
+    public static int i1, j1, e1, idRowI, idColI, idNPLI, HigCell, CouCell = 3, NumRec, NumCol, NumTab, WidFIO = 220;
     public static float MulCell = 1.057F;
 
     private FragmentHomeBinding binding;
@@ -74,6 +73,7 @@ public class HomeFragment extends Fragment {
         horizontalScrollView4 = root.findViewById(R.id.horizontalScrollView4);
         tableLayout4 = root.findViewById(R.id.tableLayout4);
         tableLayout5 = root.findViewById(R.id.tableLayout5);
+        tableLayout6 = root.findViewById(R.id.tableLayout6);
         scrollView3 = root.findViewById(R.id.scrollView3);
         scrollView4 = root.findViewById(R.id.scrollView4);
         scrollView5 = root.findViewById(R.id.scrollView5);
@@ -150,6 +150,7 @@ public class HomeFragment extends Fragment {
         horizontalScrollView4 = getActivity().findViewById(R.id.horizontalScrollView4);
         tableLayout4 = getActivity().findViewById(R.id.tableLayout4);
         tableLayout5 = getActivity().findViewById(R.id.tableLayout5);
+        tableLayout6 = getActivity().findViewById(R.id.tableLayout6);
         scrollView3 = getActivity().findViewById(R.id.scrollView3);
         scrollView4 = getActivity().findViewById(R.id.scrollView4);
         scrollView5 = getActivity().findViewById(R.id.scrollView5);
@@ -379,6 +380,7 @@ public class HomeFragment extends Fragment {
         tableLayout3.removeAllViews();
         tableLayout4.removeAllViews();
         tableLayout5.removeAllViews();
+        tableLayout6.removeAllViews();
         horizontalScrollView6.removeAllViews();
     }
 
@@ -443,12 +445,12 @@ public class HomeFragment extends Fragment {
         tableRow4 = new TableRow[NumRec];
         tableRow5 = new TableRow[NumRec];
         tableRow6 = new TableRow[1];
-        tv1 = new TextView[0][3];
+        tv1 = new TextView[1][3];
         tv2 = new TextView[2][6];
         tv3 = new TextView[NumRec][2];
         tv4 = new TextView[NumRec][NumCol];
         tv5 = new TextView[NumRec][3];
-        tv6 = new TextView[0][NumRec];
+        tv6 = new TextView[1][NumRec];
 
         tableLayout1.setColumnStretchable(2, true);
         tableLayout2.setColumnStretchable(2, true);
@@ -546,6 +548,7 @@ public class HomeFragment extends Fragment {
 
             }
 
+            j1 = 5;
             if (i1 == 1) {
                 if ((j1 % 2) != 0) {
                     tv2[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.colBlueMidCyan));
@@ -556,24 +559,17 @@ public class HomeFragment extends Fragment {
                     tv2[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.colBlueLitCyan));
 
                 }
-
             }
             tableLayout2.addView(tableRow2[i1], i1);
             i1++;
         }
 
-
         cursor.moveToFirst();
 
-
         tableRow6[0] = new TableRow(hContext);
-
         tableRow6[0].setPadding(1, 1, 1, 1);
-
         tableRow6[0].setLayoutParams(tlpF3);
-
         j1 = 0;
-
         while (j1 < NumCol - 6) {
             tv6[0][j1] = new TextView(hContext);
 
@@ -602,11 +598,8 @@ public class HomeFragment extends Fragment {
         }
 
         tableLayout6.addView(tableRow6[0], 0);
-
-
         cursor.moveToFirst();
         i1 = 0;
-
         while (i1 < cursor.getCount() - 1) {
             tableRow3[i1] = new TableRow(hContext);
             tableRow3[i1].setPadding(1, 1, 1, 1);
@@ -619,12 +612,9 @@ public class HomeFragment extends Fragment {
             tableRow5[i1].setLayoutParams(tlpF3);
 
             j1 = 0;
-
             while (j1 < 2) {
                 tv3[i1][j1] = new TextView(hContext);
-
                 tv3[i1][j1].setTextColor(ContextCompat.getColor(hContext, R.color.black));
-
                 tv3[i1][j1].setTextSize((float) 14);
 
                 if (j1 == 0) {
@@ -676,136 +666,106 @@ public class HomeFragment extends Fragment {
 
                 tv3[i1][j1].setId(Integer.parseInt(MainActivity.Str04));
 
-                tv3[i1][j1].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    }
+                tv3[i1][j1].setOnClickListener(v -> {
                 });
-                tv3[i1][j1].setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        EditText editText1 = new EditText(hContext);
+                tv3[i1][j1].setOnLongClickListener(v -> {
+                    EditText editText1 = new EditText(hContext);
 
-                        idNPLI = Integer.parseInt(String.valueOf(v.getId()).substring(1, 3));
+                    idNPLI = Integer.parseInt(String.valueOf(v.getId()).substring(1, 3));
 
-                        idRowI = Integer.parseInt(String.valueOf(v.getId()).substring(3, 5));
+                    idRowI = Integer.parseInt(String.valueOf(v.getId()).substring(3, 5));
 
-                        idColI = Integer.parseInt(String.valueOf(v.getId()).substring(5, 7));
+                    idColI = Integer.parseInt(String.valueOf(v.getId()).substring(5, 7));
 
-                        editText1.setText(tv3[idRowI][idColI].getText());
+                    editText1.setText(tv3[idRowI][idColI].getText());
 
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(hContext);
-                        dialog.setTitle("Изменение данных");
-                        dialog.setView(editText1);
-                        dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(hContext);
+                    dialog.setTitle("Изменение данных");
+                    dialog.setView(editText1);
+                    dialog.setPositiveButton(R.string.ok, (dialog1, which) -> {
 
-                                ContentValues contentValues = new ContentValues();
-                                contentValues.clear();
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.clear();
 
-                                contentValues.put(MainActivity.TFIO, String.valueOf(editText1.getText()));
+                        contentValues.put(MainActivity.TFIO, String.valueOf(editText1.getText()));
 
 
-                                db.update(BaseName, contentValues, MainActivity.T_id_FIO + " = ?", new String[]{String.valueOf(idRowI + 1)});
-                                updatePage(hContext, idNPLI, BaseName, idNPLI);
+                        db.update(BaseName, contentValues, MainActivity.T_id_FIO + " = ?", new String[]{String.valueOf(idRowI + 1)});
+                        updatePage(hContext, idNPLI, BaseName, idNPLI);
 
-                            }
-                        });
-                        dialog.setNegativeButton(R.string.cancel, null);
+                    });
+                    dialog.setNegativeButton(R.string.cancel, null);
 
-                        dialog.create();
+                    dialog.create();
 
-                        dialog.show();
+                    dialog.show();
 
-                        return false;
-                    }
+                    return false;
                 });
                 HigCell = tv3[i1][j1].getLineHeight();
-
                 tv3[i1][j1].setMinimumHeight((int) (HigCell * MulCell * CouCell));
-
                 tv3[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.white));
-
+                tableRow3[i1].addView(tv3[i1][j1], j1);
+                j1++;
             }
 
-            tableRow3[i1].addView(tv3[i1][j1], j1);
+            j1 = 0;
+            while (j1 < NumCol - 6) {
+                tv4[i1][j1] = new TextView(hContext);
+                tv4[i1][j1].setPadding(1, 1, 1, 1);
+                tv4[i1][j1].setTextColor(ContextCompat.getColor(hContext, R.color.black));
+                tv4[i1][j1].setTextSize((float) 14);
+                tv4[i1][j1].setText(cursor.getString(j1 + 2));
+                tv4[i1][j1].setWidth(100);
+                tv4[i1][j1].setMinimumHeight((int) (HigCell * MulCell * CouCell));
 
-            j1++;
+                if ((j1 % 2) != 0) {
+                    tv4[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.colBAquamarine));
+                }
 
+                if ((j1 % 2) == 0) {
+                    tv4[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.colBlueTurquoi));
+                }
+
+                tableRow4[i1].addView(tv4[i1][j1], j1);
+                j1++;
+            }
+
+            j1 = 0;
+            while (j1 < 3) {
+                tv5[i1][j1] = new TextView(hContext);
+
+                tv5[i1][j1].setTextColor(ContextCompat.getColor(hContext, R.color.black));
+
+                tv5[i1][j1].setTextSize((float) 14);
+
+                tv5[i1][j1].setText(cursor.getString(NumCol - 6 + 2 + j1) + "\n");
+
+                tv5[i1][j1].setWidth(55);
+
+                tv5[i1][j1].setMinimumHeight((int) (HigCell * MulCell * CouCell));
+
+                if ((j1 % 2) != 0) {
+                    tv5[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.colBlueAqua));
+
+                }
+
+                if ((j1 % 2) == 0) {
+                    tv5[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.colBlueTurquoi));
+
+                }
+
+                tableRow5[i1].addView(tv5[i1][j1], j1);
+
+                j1++;
+            }
+
+            tableLayout3.addView(tableRow3[i1], i1);
+            tableLayout4.addView(tableRow4[i1], i1);
+            tableLayout5.addView(tableRow5[i1], i1);
+            cursor.moveToNext();
+            i1++;
         }
-
-
-        j1 = 0;
-
-        while (j1 < NumCol - 6) {
-            tv4[i1][j1] = new TextView(hContext);
-
-            tv4[i1][j1].setPadding(1, 1, 1, 1);
-
-            tv4[i1][j1].setTextColor(ContextCompat.getColor(hContext, R.color.black));
-
-            tv4[i1][j1].setTextSize((float) 14);
-
-            tv4[i1][j1].setText(cursor.getString(j1 + 2));
-
-            tv4[i1][j1].setWidth(100);
-
-            tv4[i1][j1].setMinimumHeight((int) (HigCell * MulCell * CouCell));
-
-            if ((j1 % 2) != 0) {
-                tv4[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.colBAquamarine));
-
-            }
-
-            if ((j1 % 2) == 0) {
-                tv4[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.colBlueTurquoi));
-
-            }
-
-            tableRow4[i1].addView(tv4[i1][j1], j1);
-
-            j1++;
-
-        }
-
-
-        j1 = 0;
-
-        while (j1 < 3) {
-            tv5[i1][j1] = new TextView(hContext);
-
-            tv5[i1][j1].setTextColor(ContextCompat.getColor(hContext, R.color.black));
-
-            tv5[i1][j1].setTextSize((float) 14);
-
-            tv5[i1][j1].setText(cursor.getString(NumCol - 6 + 2 + j1) + "\n");
-
-            tv5[i1][j1].setWidth(55);
-
-            tv5[i1][j1].setMinimumHeight((int) (HigCell * MulCell * CouCell));
-
-            if ((j1 % 2) != 0) {
-                tv5[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.colBlueAqua));
-
-            }
-
-            if ((j1 % 2) == 0) {
-                tv5[i1][j1].setBackgroundColor(ContextCompat.getColor(hContext, R.color.colBlueTurquoi));
-
-            }
-
-            tableRow5[i1].addView(tv5[i1][j1], j1);
-
-            j1++;
-
-        }
-
-        tableLayout3.addView(tableRow3[i1], i1);
-        tableLayout4.addView(tableRow4[i1], i1);
-        tableLayout5.addView(tableRow5[i1], i1);
-        cursor.moveToNext();
-        i1++;
     }
 
     public static void updatePage(Context hContext, int NPL, String BaseName, int NumPage) {

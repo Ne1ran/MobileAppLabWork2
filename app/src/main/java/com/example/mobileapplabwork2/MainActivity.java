@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
                 homeFragment.createPage(DBHandler.databaseContext, 0, JBaseName, JNumPage);
             } catch (Exception e) {
                 System.out.println("DB error message " + e.getMessage());
+                System.out.println("DB error stacktrace " + e.getStackTrace());
                 Toast.makeText(MainActivity.this, "Unknown error while trying to open database. e.message=" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
