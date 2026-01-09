@@ -7,6 +7,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class DBHandler extends SQLiteOpenHelper {
+
+    public static String DatabaseName = "tbookdb.db",
+            JMainTabl = "JMainTabl",
+            T_idTabl = "_idTabl",
+            TNameTab = "NameTab";
+
     public static Context databaseContext;
     public static SQLiteDatabase.CursorFactory factory = null;
     public static DBHandler DBHandler;
@@ -18,15 +24,16 @@ public class DBHandler extends SQLiteOpenHelper {
         databaseContext = context;
         database = this.getWritableDatabase();
         DBHandler = this;
-        database.execSQL("CREATE TABLE IF NOT EXISTS JMainTabl (_idTabl integer primary key, NameTab text)");
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + JMainTabl + " (" + T_idTabl + " integer primary key, " + TNameTab + " text)");
+        System.out.println("Sql created");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        System.out.println("Sql upgraded");
     }
 }

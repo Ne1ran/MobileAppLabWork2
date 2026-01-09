@@ -18,7 +18,6 @@ import com.example.mobileapplabwork2.R;
 public class JournalFragment extends Fragment implements View.OnClickListener {
     onJournalFragmentListener journalFragmentCreate;
 
-    // Поля для View элементов из XML
     private TextView textView6;
     private TextView textView7;
     private TextView textView2;
