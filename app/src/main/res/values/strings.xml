@@ -34,4 +34,7 @@
     <string name="tuesday">Tuesday</string>
     <string name="monday">Monday</string>
     <string name="menu_journal">Журнал</string>
+
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
     public static int JNumPage, JNumLearn, JNumStudents, FragmentStart = 0;
     public static File SDPath, SDFile;
     public static AlertDialog.Builder allDB;
-    public HomeFragment HomeFragment;
+    public HomeFragment homeFragment;
     public DBHandler dbHelper;
     public SQLiteDatabase db;
     public ContentValues contentValues;
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        HomeFragment = new HomeFragment();
+        homeFragment = new HomeFragment();
 
         // Инициализация привязки представлений и установка содержимого
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
     @Override
     protected void onStart() {
         super.onStart();
-        // Создание объекта dbHelper для работы с базой данных
         dbHelper = new DBHandler(MainActivity.this, DatabaseName, DBHandler.factory, DatabaseVersion);
         db = dbHelper.getReadableDatabase();
         contentValues = new ContentValues();
@@ -149,9 +148,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
 
         // Обработка нажатия на пункт меню с id R.id.menu_11
         if (item.getItemId() == R.id.menu_11) {
-            cursor = db.query(JMainTabl, null, null, null, null, null, null);
-            cursor.moveToFirst(); // Установка курсора на первую позицию
-            HomeFragment.createPage(DBHandler.databaseContext, 0, cursor.getString(1), JNumPage);
+            try {
+                cursor = db.query(JMainTabl, null, null, null, null, null, null);
+                cursor.moveToFirst(); // Установка курсора на первую позицию
+                homeFragment.createPage(DBHandler.databaseContext, 0, DatabaseName, JNumPage);
+            } catch (Exception e) {
+                Toast.makeText(MainActivity.this, "Unknown error while trying to open database. e.message=" + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -213,104 +216,93 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
 
     @Override
     public void JournalFragmentCreate(int num, String name, int page, int learn, int students) {
-        // Если кнопка OK была нажата в фрагменте создания базы данных
-        if (num == 1) {
-            db = dbHelper.getWritableDatabase();
-            
-            // Удаление таблицы JMainTabl
-            db.execSQL("drop table if exists '" + JMainTabl + "'");
-            // Создание главной таблицы журнала
-            Str01 = "create table if not exists "; // Строковая переменная "create table if not exists"
-            Str02 = Str01 + JMainTabl + " ('" + T_idTabl + "' integer primary key, '" + TNameTab + "' text)";
-            db.execSQL(Str02); // Создание и выполнение SQL команды
-
-            // Вставка записей в первую строку главной таблицы журнала
-            contentValues.clear(); // Очистка объекта contentValues
-            contentValues.put(T_idTabl, "1"); // Создание записи для добавления номера строки
-            contentValues.put(TNameTab, String.valueOf(name)); // Создание записи для добавления названий таблиц
-            db.insert(JMainTabl, null, contentValues); // Вставка записи в таблицу
-
-            // Создание таблиц журнала
-            db.execSQL("drop table if exists '" + name + "'"); // Удаление таблицы BaseName
-            T_Atten = new String[learn]; // Создание массива названий полей таблицы
-            Str01 = "create table if not exists "; // Строковая переменная "create table if not exists"
-            Str02 = Str01 + name + " ('" + T_id_FIO + "' integer primary key, '" + TFIO + "' text, "; // Создание SQL команды
-            Str03 = ""; // Очистка строковой переменной Str03
-
-            // Обнуление счётчика цикла по колонкам дат проведения занятий
-            j1 = 0;
-            // Цикл по датам проведения занятий
-            while (j1 < learn) {
-                // Создание названия поля таблицы
-                T_Atten[j1] = "2024.02.12." + String.valueOf(j1 + 1);
-                // Создание SQL команды
-                Str03 = Str03 + T_Atten[j1] + "' text, '";
-                // Наращивание счётчика j1
-                j1++;
-            }
-
-            // Создание SQL команды
-            Str04 = TSertifZ + "' text, '" + TSertifK + "' integer, '" + TSertifE + "' integer, '" + TSertifD + "' text)";
-            Str05 = Str02 + Str03 + Str04;
-            db.execSQL(Str05); // Выполнение SQL команды
-
-            // Вставка записей в другие строки таблицы
-            // Вставка первой строки (шапка/шаблон строки)
-            contentValues.clear(); // Очистка объекта contentValues
-            contentValues.put(T_id_FIO, "0"); // Создание записи для добавления номера строки
-            contentValues.put(TFIO, "ФИО"); // Создание записи для добавления фамилий
-            // Обнуление счётчика цикла по колонкам дат проведения занятий
-            j1 = 0;
-            // Цикл по датам проведения занятий
-            while (j1 < learn) {
-                // Создание записи для добавления дат проведения занятий
-                contentValues.put(T_Atten[j1], String.valueOf(T_Atten[j1]));
-                // Наращивание счётчика j1
-                j1++;
-            }
-            contentValues.put(TSertifZ, "Z"); // Создание записи для добавления оценки по зачету
-            contentValues.put(TSertifK, "0"); // Создание записи для добавления оценки по курсовому проекту
-            contentValues.put(TSertifE, "0"); // Создание записи для добавления оценки по экзамену
-            contentValues.put(TSertifD, "D"); // Создание записи для добавления даты аттестации
-            db.insert(name, null, contentValues); // Вставка записи в таблицу
-
-            // Вставка записей в другие строки таблицы
-            // Обнуление счётчика цикла по записям таблицы
-            i1 = 0;
-            // Цикл по количеству студентов (по строкам таблицы)
-            while (i1 < students) {
+        try {
+            if (num == 1) {
+                db = dbHelper.getWritableDatabase();
+                db.execSQL("drop table if exists '" + JMainTabl + "'");
+                Str01 = "create table if not exists "; // Строковая переменная "create table if not exists"
+                Str02 = Str01 + JMainTabl + " ('" + T_idTabl + "' integer primary key, '" + TNameTab + "' text)";
+                db.execSQL(Str02); // Создание и выполнение SQL команды
                 contentValues.clear(); // Очистка объекта contentValues
-                Str01 = String.valueOf(i1 + 1); // Строка с номером записи
-                contentValues.put(T_id_FIO, String.valueOf(Str01)); // Создание записи для добавления номера строки
-                // Создание записи для добавления ФИО
-                contentValues.put(TFIO, "Фамилия" + "\n" + "Имя" + "\n" + "Отчество " + Str01);
-                // Обнуление счётчика цикла по элементам записи таблицы
+                contentValues.put(T_idTabl, "1"); // Создание записи для добавления номера строки
+                contentValues.put(TNameTab, String.valueOf(name)); // Создание записи для добавления названий таблиц
+                db.insert(JMainTabl, null, contentValues); // Вставка записи в таблицу
+                db.execSQL("drop table if exists '" + name + "'"); // Удаление таблицы BaseName
+                T_Atten = new String[learn]; // Создание массива названий полей таблицы
+                Str01 = "create table if not exists "; // Строковая переменная "create table if not exists"
+                Str02 = Str01 + name + " ('" + T_id_FIO + "' integer primary key, 'FIO' text, ";
+                Str03 = ""; // Очистка строковой переменной Str03
                 j1 = 0;
-                // Цикл по колонкам дат проведения занятий
+                while (j1 < learn) {
+                    T_Atten[j1] = "2025.02.12." + (j1 + 1);
+                    Str03 = Str03 + "'" + T_Atten[j1] + "' text, ";
+                    j1++;
+                }
+                Str04 = "'" + TSertifZ + "' text, '" + TSertifK + "' integer, '" + TSertifE + "' integer, '" + TSertifD + "' text)";
+                Str05 = Str02 + Str03 + Str04;
+                db.execSQL(Str05); // Выполнение SQL команды
+
+                // Вставка записей в другие строки таблицы
+                // Вставка первой строки (шапка/шаблон строки)
+                contentValues.clear(); // Очистка объекта contentValues
+                contentValues.put(T_id_FIO, "0"); // Создание записи для добавления номера строки
+                contentValues.put(TFIO, "ФИО"); // Создание записи для добавления фамилий
+                // Обнуление счётчика цикла по колонкам дат проведения занятий
+                j1 = 0;
+                // Цикл по датам проведения занятий
                 while (j1 < learn) {
                     // Создание записи для добавления дат проведения занятий
-                    contentValues.put(T_Atten[j1], Str01 + "\n" + String.valueOf(j1 + 1));
+                    contentValues.put(T_Atten[j1], String.valueOf(T_Atten[j1]));
                     // Наращивание счётчика j1
                     j1++;
                 }
-                contentValues.put(TSertifZ, "Z" + "\n" + Str01); // Создание записи для добавления оценки по зачету
-                contentValues.put(TSertifK, "0" + "\n" + Str01); // Создание записи для добавления оценки по курсовому проекту
-                contentValues.put(TSertifE, "0" + "\n" + Str01); // Создание записи для добавления оценки по экзамену
-                contentValues.put(TSertifD, "D" + "\n" + Str01); // Создание записи для добавления даты аттестации
+                contentValues.put(TSertifZ, "Z"); // Создание записи для добавления оценки по зачету
+                contentValues.put(TSertifK, "0"); // Создание записи для добавления оценки по курсовому проекту
+                contentValues.put(TSertifE, "0"); // Создание записи для добавления оценки по экзамену
+                contentValues.put(TSertifD, "D"); // Создание записи для добавления даты аттестации
                 db.insert(name, null, contentValues); // Вставка записи в таблицу
-                // Наращивание счётчика записи i1
-                i1++;
-            }
-            // Конец цикла while (i1 < NumStud)
 
-            JBaseName = name;
-            JNumPage = page;
-            JNumLearn = learn;
-            JNumStudents = students;
+                // Вставка записей в другие строки таблицы
+                // Обнуление счётчика цикла по записям таблицы
+                i1 = 0;
+                // Цикл по количеству студентов (по строкам таблицы)
+                while (i1 < students) {
+                    contentValues.clear(); // Очистка объекта contentValues
+                    Str01 = String.valueOf(i1 + 1); // Строка с номером записи
+                    contentValues.put(T_id_FIO, Str01); // Создание записи для добавления номера строки
+                    // Создание записи для добавления ФИО
+                    contentValues.put(TFIO, "Фамилия" + "\n" + "Имя" + "\n" + "Отчество " + Str01);
+                    // Обнуление счётчика цикла по элементам записи таблицы
+                    j1 = 0;
+                    // Цикл по колонкам дат проведения занятий
+                    while (j1 < learn) {
+                        // Создание записи для добавления дат проведения занятий
+                        contentValues.put(T_Atten[j1], Str01 + "\n" + (j1 + 1));
+                        // Наращивание счётчика j1
+                        j1++;
+                    }
+                    contentValues.put(TSertifZ, "Z" + "\n" + Str01); // Создание записи для добавления оценки по зачету
+                    contentValues.put(TSertifK, "0" + "\n" + Str01); // Создание записи для добавления оценки по курсовому проекту
+                    contentValues.put(TSertifE, "0" + "\n" + Str01); // Создание записи для добавления оценки по экзамену
+                    contentValues.put(TSertifD, "D" + "\n" + Str01); // Создание записи для добавления даты аттестации
+                    db.insert(name, null, contentValues); // Вставка записи в таблицу
+                    // Наращивание счётчика записи i1
+                    i1++;
+                }
+
+                JBaseName = name;
+                JNumPage = page;
+                JNumLearn = learn;
+                JNumStudents = students;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Sql command log=" + Str05);
+            Toast.makeText(MainActivity.this, "Unknown error while trying to create journal. e.message=" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         // Удаление фрагмента
-        this.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, this.HomeFragment).commit();
+        this.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, this.homeFragment).commit();
         // Установка заголовка фрагменту
         this.setTitle("Home");
     }

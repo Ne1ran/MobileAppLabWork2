@@ -18,11 +18,11 @@ public class DBHandler extends SQLiteOpenHelper {
         databaseContext = context;
         database = this.getWritableDatabase();
         DBHandler = this;
+        database.execSQL("CREATE TABLE IF NOT EXISTS JMainTabl (_idTabl integer primary key, NameTab text)");
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
     }
 
     @Override
