@@ -37,4 +37,29 @@
 
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
+
+    <string name="permission_granted">Разрешение получено</string>
+    <string name="permission_request">Запрос разрешения на доступ к карте памяти</string>
+    <string name="permission_not_granted">Разрешения на доступ к карте памяти не получены</string>
+    <string name="storage_not_available">Или карта памяти отсутствует</string>
+    <string name="try_all_files_access">Попытка получить доступ ко всем файлам на внешнем носителе</string>
+    <string name="exception_occurred">Exception %s</string>
+    <string name="menu_new">Новый файл</string>
+    <string name="menu_open">Открыть</string>
+    <string name="menu_save">Сохранить</string>
+    <string name="menu_save_as">Сохранить как...</string>
+    <string name="NullPointerEx">Перестроение списка файлов невозможно</string>
+    <string name="but_ok">OK</string>
+    <string name="but_cancel">Выход</string>
+    <string name="but_dir">Вернуться к выбору каталога</string>
+    <string name="ed_dir">Каталог</string>
+    <string name="ed_create">Создать каталог</string>
+    <string name="ed_file">Имя файла</string>
+    <string name="atten">Внимание! Предупреждение!</string>
+    <string name="directory">Каталог</string>
+    <string name="createdir">Создать каталог</string>
+    <string name="backtodir">Имя файла</string>
+    <string name="buttonOK">Да</string>
+    <string name="buttcanc">Выход</string>
+    <string name="buttback">Вернуться к выбору каталога</string>
 </resources>

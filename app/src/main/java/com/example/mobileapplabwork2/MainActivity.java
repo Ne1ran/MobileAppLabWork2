@@ -1,16 +1,26 @@
 package com.example.mobileapplabwork2;
 
+import android.Manifest;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
+import android.os.Environment;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -24,10 +34,19 @@ import com.example.mobileapplabwork2.ui.journal.JournalFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.HomeFragmentListener, JournalFragment.onJournalFragmentListener {
 
+
+    private static final String WRITE_EXT_STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    private static final int WRITE_EXT_STORAGE_REQUEST_CODE = 10101;
     public static int DatabaseVersion = 1;
     public static int i1, j1;
     public static String DatabaseName = "tbookdb.db",
@@ -45,6 +64,11 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
     public static String[] T_Atten;
     private AppBarConfiguration mAppBarConfiguration;
 
+    public static String GlobalFolderName = "";
+    public static String GlobalFilessName = "";
+    public static int OFD_ButtonPress = 0;
+    public static File sdPath, sdFile;
+
     public static String JBaseName;
     public static int JNumPage, JNumLearn, JNumStudents, FragmentStart = 0;
     public static File SDPath, SDFile;
@@ -60,6 +84,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
         super.onCreate(savedInstanceState);
 
         homeFragment = new HomeFragment();
+
+        if (isPermissionGranted(WRITE_EXT_STORAGE_PERMISSION)) {
+            Toast.makeText(this, R.string.permission_granted, Toast.LENGTH_SHORT).show();
+        } else {
+            requestPermission(WRITE_EXT_STORAGE_PERMISSION, WRITE_EXT_STORAGE_REQUEST_CODE);
+            Toast.makeText(this, R.string.permission_request, Toast.LENGTH_SHORT).show();
+        }
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -283,5 +314,161 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
 
         this.getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, this.homeFragment).commit();
         this.setTitle("Home");
+    }
+
+
+    public static void fileWrite_SD(String fPath, String fDir, String fFile, Context context) {
+        if
+        (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            OFD_ButtonPress = 0;
+            AlertDialog allDB = new AlertDialog.Builder(MainActivity.editText1.getContext()).create();
+            allDB.setMessage("SD-карта не доступна");
+            allDB.show();
+            return;
+        }
+        sdPath = Environment.getExternalStorageDirectory();
+        if (fDir.equals("")) {
+            sdPath = new File(fPath);
+        }
+        if (!fDir.equals("")) {
+            sdPath = new File(fPath + File.separator + fDir);
+        }
+        if (!sdPath.exists()) {
+            sdPath.mkdir();
+        }
+        sdFile = new File(sdPath, fFile);
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+            bw.write(String.valueOf("editText1.getText()"));
+            bw.close();
+        } catch (FileNotFoundException e) {
+            AlertDialog allDB = new AlertDialog.Builder(context).create();
+            allDB.setMessage("Файл не найден");
+            allDB.show();
+            e.printStackTrace();
+        } catch (IOException e) {
+            AlertDialog allDB = new AlertDialog.Builder(context).create();
+            allDB.setMessage("Ошибка ввода-вывода");
+            allDB.show();
+            e.printStackTrace();
+        }
+    }
+
+    public static void fileRead_SD(String fPath, String fFile, Context context) {
+        if
+        (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            OFD_ButtonPress = 0;
+            AlertDialog allDB = new AlertDialog.Builder(context).create();
+            allDB.setMessage("SD-карта не доступна");
+            allDB.show();
+            return;
+        }
+        String Str01 = "";
+        Str01 = fFile.substring(fFile.length() - 3, fFile.length());
+        OFD_ButtonPress = 0;
+        if (Str01.equals("txt")) {
+            editText1.setText("");
+            sdPath = Environment.getExternalStorageDirectory();
+            sdPath = new File(fPath);
+            sdFile = new File(sdPath, fFile);
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(sdFile));
+                while ((Str01 = br.readLine()) != null) {
+                    editText1.setText(editText1.getText() + Str01 + "\n");
+                }
+                br.close();
+
+
+                Toast.makeText(editText1.getContext(), "Файл успешно загружен: " + fFile, Toast.LENGTH_SHORT).show();
+            } catch (FileNotFoundException e) {
+                AlertDialog allDB = new AlertDialog.Builder(MainActivity.editText1.getContext()).create();
+                allDB.setMessage("Файл не найден");
+                allDB.show();
+                e.printStackTrace();// Отображение трассировки стека
+            } catch (IOException e) {
+                AlertDialog allDB = new AlertDialog.Builder(MainActivity.editText1.getContext()).create();
+                allDB.setMessage("Ошибка ввода-вывода");
+                allDB.show();
+                e.printStackTrace();// Отображение трассировки стека
+            }
+        }
+    }
+
+    public void showSaveAsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Сохранить как...");
+
+        final EditText input = new EditText(this);
+        input.setHint("Введите имя файла");
+
+        if (!GlobalFilessName.equals("")) {
+            input.setText(GlobalFilessName);
+        }
+
+        builder.setView(input);
+
+        builder.setPositiveButton("Сохранить", (dialog, which) -> {
+            String fileName = input.getText().toString();
+
+            if (fileName.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Имя файла не может быть пустым", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!fileName.toLowerCase().endsWith(".txt")) {
+                fileName += ".txt";
+            }
+
+            GlobalFilessName = fileName;
+            fileWrite_SD(GlobalFolderName, "", GlobalFilessName);
+            Toast.makeText(MainActivity.this, "Файл сохранен: " + GlobalFilessName, Toast.LENGTH_LONG).show();
+            setTitle("Текст.ред.: " + GlobalFilessName);
+        });
+
+        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private boolean isPermissionGranted(String permission) {
+        int permissionCheck = ActivityCompat.checkSelfPermission(this, permission);
+        return permissionCheck == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission(String permission, int requestCode) {
+        ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == WRITE_EXT_STORAGE_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, R.string.permission_granted, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.storage_not_available, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        if (Build.VERSION.SDK_INT >= 30) {
+            if (!Environment.isExternalStorageManager()) {
+                try {
+                    Uri uri = Uri.parse("package:" + getPackageName());
+                    Intent intent = null;
+                    intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri);
+                    startActivity(intent);
+                    Toast.makeText(this, R.string.try_all_files_access, Toast.LENGTH_SHORT).show();
+                } catch (Exception ex) {
+                    Toast.makeText(this, getString(R.string.exception_occurred, ex.toString()), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                    startActivity(intent);
+                }
+            }
+        }
     }
 }
