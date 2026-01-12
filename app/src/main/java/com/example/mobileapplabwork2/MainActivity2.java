@@ -81,7 +81,7 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
             fDirS = String.valueOf(editTextM2_2.getText());
             fFileS = String.valueOf(editTextM2_3.getText());
             GlobalFilessName = String.valueOf(editTextM2_3.getText());
-            MainActivity.fileWrite_SD(fPathS, fDirS, fFileS);
+//            MainActivity.fileWrite_SD(fPathS, fDirS, fFileS, this.getApplicationContext());
             this.finish();
 
         } else if (id == R.id.buttonM2_2) {

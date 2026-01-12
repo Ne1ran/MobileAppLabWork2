@@ -78,15 +78,12 @@ public class OpenFileDialog extends AlertDialog.Builder{
             }
 
             if (MainActivity.OFD_ButtonPress == 2) {
-                MainActivity.fileRead_SD(GlobalFolderName, GlobalFilessName);
+                MainActivity.fileRead_SD(GlobalFolderName, GlobalFilessName, this.getContext());
             }
             else if (MainActivity.OFD_ButtonPress == 4) {
-                if (getContext() instanceof MainActivity) {
-                    ((MainActivity) getContext()).showSaveAsDialog();
-                }
                 MainActivity.OFD_ButtonPress = 0;
-
                 MainActivity.FragmentStart = 1;
+                MainActivity.fileWrite_SD(currentPath, fileNameSt, getContext());
             }
             else {
                 Intent intent;
@@ -96,7 +93,6 @@ public class OpenFileDialog extends AlertDialog.Builder{
         });
 
         setNegativeButton(R.string.cancel, (dialog, which) -> {
-            // Логика обработки нажатия Cancel может быть добавлена здесь
         });
 
         title = createTitle(context);

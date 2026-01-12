@@ -31,6 +31,7 @@ import com.example.mobileapplabwork2.databinding.ActivityMainBinding;
 import com.example.mobileapplabwork2.sql.DBHandler;
 import com.example.mobileapplabwork2.ui.home.HomeFragment;
 import com.example.mobileapplabwork2.ui.journal.JournalFragment;
+import com.example.mobileapplabwork2.ui.openfile.OpenFileDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -176,9 +177,20 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
                 homeFragment.createPage(DBHandler.databaseContext, 0, JBaseName, JNumPage);
             } catch (Exception e) {
                 System.out.println("DB error message " + e.getMessage());
-                System.out.println("DB error stacktrace " + e.getStackTrace());
                 Toast.makeText(MainActivity.this, "Unknown error while trying to open database. e.message=" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
+        }
+
+        if (item.getItemId() == R.id.menu_13) { // Удаление журнала
+            Cursor cursor = db.query("\"" + JMainTabl + "\"", null, null, null, null, null, null);
+            cursor.moveToFirst();
+            db.execSQL("drop table if exists " + cursor.getString(1));
+            db.execSQL("drop table if exists " + JMainTabl);
+        }
+        if (item.getItemId() == R.id.menu_14) { // Сохранение в файл
+            OFD_ButtonPress = 4;
+            OpenFileDialog fileDialog = new OpenFileDialog(this);
+            fileDialog.show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -317,30 +329,47 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
     }
 
 
-    public static void fileWrite_SD(String fPath, String fDir, String fFile, Context context) {
+    public static void fileWrite_SD(String fPath, String fFile, Context context) {
         if
         (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             OFD_ButtonPress = 0;
-            AlertDialog allDB = new AlertDialog.Builder(MainActivity.editText1.getContext()).create();
+            AlertDialog allDB = new AlertDialog.Builder(context).create();
             allDB.setMessage("SD-карта не доступна");
             allDB.show();
             return;
         }
         sdPath = Environment.getExternalStorageDirectory();
-        if (fDir.equals("")) {
-            sdPath = new File(fPath);
-        }
-        if (!fDir.equals("")) {
-            sdPath = new File(fPath + File.separator + fDir);
-        }
+        sdPath = new File(fPath);
         if (!sdPath.exists()) {
             sdPath.mkdir();
         }
         sdFile = new File(sdPath, fFile);
+        SQLiteDatabase database = DBHandler.database;
+        var cursor = database.query(JBaseName, null, null, null, null, null, null);
         try {
+            StringBuilder header = new StringBuilder();
+            for (int i = 0; i < cursor.getColumnCount(); i++) {
+                header.append(cursor.getColumnName(i));
+                if (i < cursor.getColumnCount() - 1) header.append(";");
+            }
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
-            bw.write(String.valueOf("editText1.getText()"));
+            bw.write(header.toString());
+            bw.newLine();
+
+            if (cursor.moveToFirst()) {
+                do {
+                    StringBuilder line = new StringBuilder();
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        line.append(cursor.getString(i));
+                        if (i < cursor.getColumnCount() - 1) line.append(";");
+                    }
+                    bw.write(line.toString());
+                    bw.newLine();
+                } while (cursor.moveToNext());
+            }
             bw.close();
+            Toast.makeText(context, "Successfully saved database to file!", Toast.LENGTH_LONG).show();
         } catch (FileNotFoundException e) {
             AlertDialog allDB = new AlertDialog.Builder(context).create();
             allDB.setMessage("Файл не найден");
@@ -367,30 +396,30 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
         Str01 = fFile.substring(fFile.length() - 3, fFile.length());
         OFD_ButtonPress = 0;
         if (Str01.equals("txt")) {
-            editText1.setText("");
-            sdPath = Environment.getExternalStorageDirectory();
-            sdPath = new File(fPath);
-            sdFile = new File(sdPath, fFile);
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(sdFile));
-                while ((Str01 = br.readLine()) != null) {
-                    editText1.setText(editText1.getText() + Str01 + "\n");
-                }
-                br.close();
-
-
-                Toast.makeText(editText1.getContext(), "Файл успешно загружен: " + fFile, Toast.LENGTH_SHORT).show();
-            } catch (FileNotFoundException e) {
-                AlertDialog allDB = new AlertDialog.Builder(MainActivity.editText1.getContext()).create();
-                allDB.setMessage("Файл не найден");
-                allDB.show();
-                e.printStackTrace();// Отображение трассировки стека
-            } catch (IOException e) {
-                AlertDialog allDB = new AlertDialog.Builder(MainActivity.editText1.getContext()).create();
-                allDB.setMessage("Ошибка ввода-вывода");
-                allDB.show();
-                e.printStackTrace();// Отображение трассировки стека
-            }
+//            editText1.setText("");
+//            sdPath = Environment.getExternalStorageDirectory();
+//            sdPath = new File(fPath);
+//            sdFile = new File(sdPath, fFile);
+//            try {
+//                BufferedReader br = new BufferedReader(new FileReader(sdFile));
+//                while ((Str01 = br.readLine()) != null) {
+//                    editText1.setText(editText1.getText() + Str01 + "\n");
+//                }
+//                br.close();
+//
+//
+//                Toast.makeText(editText1.getContext(), "Файл успешно загружен: " + fFile, Toast.LENGTH_SHORT).show();
+//            } catch (FileNotFoundException e) {
+//                AlertDialog allDB = new AlertDialog.Builder(MainActivity.editText1.getContext()).create();
+//                allDB.setMessage("Файл не найден");
+//                allDB.show();
+//                e.printStackTrace();// Отображение трассировки стека
+//            } catch (IOException e) {
+//                AlertDialog allDB = new AlertDialog.Builder(MainActivity.editText1.getContext()).create();
+//                allDB.setMessage("Ошибка ввода-вывода");
+//                allDB.show();
+//                e.printStackTrace();// Отображение трассировки стека
+//            }
         }
     }
 
@@ -420,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
             }
 
             GlobalFilessName = fileName;
-            fileWrite_SD(GlobalFolderName, "", GlobalFilessName);
+            fileWrite_SD(GlobalFolderName, GlobalFilessName, this.getApplicationContext());
             Toast.makeText(MainActivity.this, "Файл сохранен: " + GlobalFilessName, Toast.LENGTH_LONG).show();
             setTitle("Текст.ред.: " + GlobalFilessName);
         });
@@ -438,7 +467,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.Home
     private void requestPermission(String permission, int requestCode) {
         ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
